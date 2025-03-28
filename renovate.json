@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>mu88/renovate-config"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^.*devcontainer.json$"],
+      "matchStrings": ["\\s*.*features\\/dotnet:2\"\\s*:\\s*{\\s*\"version\"\\s*:\\s*\"(?<currentValue>.*?)\""],
+      "datasourceTemplate": "docker",
+      "packageNameTemplate": "mcr.microsoft.com/dotnet/sdk"
+    }
+  ]
+}

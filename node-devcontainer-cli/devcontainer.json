@@ -1,0 +1,32 @@
+{
+    "name": "Node / devcontainers-cli",
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
+    "features": {
+      "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+      "ghcr.io/devcontainers/features/powershell:1": {}
+    },
+    "postStartCommand": "npm install -g @devcontainers/cli",
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "github.vscode-github-actions",
+          "github.copilot-chat",
+          "github.copilot",
+          "ms-vscode.powershell"
+        ],
+        "settings": {
+          "terminal.integrated.profiles.linux": {
+            "pwsh": {
+              "path": "/usr/bin/pwsh",
+              "args": [
+                "-NoLogo"
+              ]
+            }
+          },
+          "terminal.integrated.defaultProfile.linux": "pwsh",
+          "powershell.developerTools.enableTelemetry": false
+        }
+      }
+    }
+  }
+  

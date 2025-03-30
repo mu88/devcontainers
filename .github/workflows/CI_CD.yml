@@ -11,6 +11,14 @@ on:
 jobs:
   ci_cd:
     runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        package: [
+          dotnet
+        ]
+
     steps:
       - uses: actions/checkout@v4
       - name: Login to DockerHub
@@ -19,12 +27,12 @@ jobs:
           registry: registry.hub.docker.com
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Pre-build dev container image
+      - name: Pre-build dev container image '${{ matrix.package }}'
         uses: devcontainers/ci@v0.3
         with:
-          imageName: registry.hub.docker.com/mu88/devcontainers-dotnet
-          cacheFrom: registry.hub.docker.com/mu88/devcontainers-dotnet
+          imageName: registry.hub.docker.com/mu88/devcontainers-${{ matrix.package }}
+          cacheFrom: registry.hub.docker.com/mu88/devcontainers-${{ matrix.package }}
           push: always
           imageTag: 'v${{ github.run_number }}, latest'
-          subFolder: 'dotnet'
-          configFile: './dotnet/devcontainer.json'
+          subFolder: '${{ matrix.package }}'
+          configFile: './${{ matrix.package }}/devcontainer.json'

@@ -1,0 +1,6 @@
+{
+  "name": "C# (.NET) / Playwright",
+  "build": {
+    "dockerfile": "Dockerfile"
+  }
+}

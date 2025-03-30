@@ -17,6 +17,7 @@ jobs:
       matrix:
         package: [
           dotnet,
+          dotnet-playwright,
           node-devcontainer-cli
         ]
 

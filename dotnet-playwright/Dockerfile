@@ -15,4 +15,8 @@ RUN mkdir /ms-playwright-driver/.playwright
 COPY --from=sdk /src_playwright/bin/Release/net*/.playwright /ms-playwright-driver/.playwright
 ENV PLAYWRIGHT_DRIVER_SEARCH_PATH=/ms-playwright-driver
 RUN chmod +x /ms-playwright-driver/.playwright/node/*/node
+
+# Seehttps://github.com/microsoft/playwright-dotnet/issues/3134#issuecomment-2765597377
+RUN chmod -R 777 /ms-playwright
+
 RUN rm -rf /src/*

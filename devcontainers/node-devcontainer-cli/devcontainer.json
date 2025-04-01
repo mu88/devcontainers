@@ -12,9 +12,13 @@
           "github.vscode-github-actions",
           "github.copilot-chat",
           "github.copilot",
-          "ms-vscode.powershell"
+          "ms-vscode.powershell",
+          "ms-vscode.vscode-loc-en"
         ],
         "settings": {
+          "locale": "en",
+          "powershell.developerTools.enableTelemetry": false,
+          "terminal.integrated.defaultProfile.linux": "pwsh",          
           "terminal.integrated.profiles.linux": {
             "pwsh": {
               "path": "/usr/bin/pwsh",
@@ -22,9 +26,7 @@
                 "-NoLogo"
               ]
             }
-          },
-          "terminal.integrated.defaultProfile.linux": "pwsh",
-          "powershell.developerTools.enableTelemetry": false
+          }
         }
       }
     }

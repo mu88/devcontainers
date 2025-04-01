@@ -36,5 +36,5 @@ jobs:
           cacheFrom: registry.hub.docker.com/mu88/devcontainers-${{ matrix.package }}
           push: always
           imageTag: 'v${{ github.run_number }}, latest'
-          subFolder: '${{ matrix.package }}'
-          configFile: './${{ matrix.package }}/devcontainer.json'
+          subFolder: 'devcontainers/${{ matrix.package }}'
+          configFile: 'devcontainers/${{ matrix.package }}/devcontainer.json'

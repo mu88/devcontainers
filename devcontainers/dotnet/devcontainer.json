@@ -37,5 +37,5 @@
   "containerEnv": {
     "DOTNET_CLI_TELEMETRY_OPTOUT": "1"
   },
-  "containerUser": "app"
+  "containerUser": "vscode" // see https://github.com/orgs/community/discussions/155456
 }

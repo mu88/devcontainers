@@ -2,7 +2,7 @@
     "name": "Node / devcontainers-cli",
     "image": "registry.hub.docker.com/mu88/devcontainers-node-devcontainer-cli:latest",
     "containerEnv": {
-      "dotnet_sdk_version": "9.0.200"
+      "dotnet_sdk_version": "9.0.202"
     }
   }
   

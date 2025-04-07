@@ -1,6 +1,9 @@
 {
   "name": "C# (.NET) / Playwright",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "Dockerfile",
+    "args": {
+      "DOTNET_SDK_VERSION": "${localEnv:dotnet_sdk_version:9.0.100}"
+    }
   }
 }

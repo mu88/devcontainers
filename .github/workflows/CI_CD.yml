@@ -2,11 +2,18 @@ name: Combined CI / Release
 
 on:
   workflow_dispatch:
+    inputs:
+      dotnet_sdk_version:
+        description: '.NET SDK version'
+        required: true
   push:
     tags:
       - '*'
     branches:
       - '**'
+
+env:
+  default_dotnet_sdk_version: 9.0.202
 
 jobs:
   ci_cd:
@@ -30,12 +37,38 @@ jobs:
           registry: registry.hub.docker.com
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Set .NET SDK version environment variable
+        run: |
+          if [ -z "${{ github.event.inputs.dotnet_sdk_version }}" ]; then
+            echo "dotnet_sdk_version=${{ env.default_dotnet_sdk_version }}" >> $GITHUB_ENV
+          else
+            echo "dotnet_sdk_version=${{ github.event.inputs.dotnet_sdk_version }}" >> $GITHUB_ENV
+          fi
+      - name: Create helper variable with .NET SDK version for Docker image tagging
+        run: |
+          if [[ "${{ matrix.package }}" == dotnet* ]]; then
+            echo "additional_tag=sdk-${{ env.dotnet_sdk_version }}" >> $GITHUB_ENV
+          else
+            echo "additional_tag=" >> $GITHUB_ENV
+          fi
+      - name: Set image tag
+        run: |
+          if [ -n "${{ env.additional_tag }}" ]; then
+            echo "image_tag=v${{ github.run_number }}, latest, ${{ env.additional_tag }}" >> $GITHUB_ENV
+          else
+            echo "image_tag=v${{ github.run_number }}, latest" >> $GITHUB_ENV
+          fi
+      - name: Log certain derived environment variables
+        run: |
+          echo "dotnet_sdk_version=${{ env.dotnet_sdk_version }}"
+          echo "additional_tag=${{ env.additional_tag }}"
+          echo "image_tag=${{ env.image_tag }}"
       - name: Pre-build dev container image '${{ matrix.package }}'
         uses: devcontainers/ci@v0.3
         with:
           imageName: registry.hub.docker.com/mu88/devcontainers-${{ matrix.package }}
           cacheFrom: registry.hub.docker.com/mu88/devcontainers-${{ matrix.package }}
           push: always
-          imageTag: 'v${{ github.run_number }}, latest'
+          imageTag: '${{ env.image_tag }}'
           subFolder: 'devcontainers/${{ matrix.package }}'
           configFile: 'devcontainers/${{ matrix.package }}/devcontainer.json'

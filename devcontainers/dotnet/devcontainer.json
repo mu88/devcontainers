@@ -8,7 +8,12 @@
     },
     "ghcr.io/devcontainers/features/powershell:1": {}
   },
-  "postStartCommand": "git clean -xdf -e '.idea' -e '*.DotSettings.user'; dotnet dev-certs https --trust; dotnet tool restore; dotnet restore", // see https://github.com/microsoft/vscode-remote-release/issues/9099
+  "postStartCommand": [
+    "git clean -xdf -e '.idea' -e '*.DotSettings.user'", // see https://github.com/microsoft/vscode-remote-release/issues/9099
+    "dotnet dev-certs https --trust",
+    "dotnet tool restore",
+    "dotnet restore"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [

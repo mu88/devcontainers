@@ -6,10 +6,7 @@
   "forwardPorts": [
     4000
   ],
-  "postStartCommand": [
-    "jekyll build",
-    "jekyll serve --watch --force_polling --verbose"
-  ],
+  "postStartCommand": "jekyll build; jekyll serve --watch --force_polling --verbose",
   "customizations": {
     "vscode": {
       "extensions": [

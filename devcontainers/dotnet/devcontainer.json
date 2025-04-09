@@ -32,7 +32,8 @@
               "-NoLogo"
             ]
           }
-        }
+        },
+        "workbench.startupEditor": "none"
       }
     }
   },

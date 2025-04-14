@@ -13,7 +13,7 @@ on:
       - '**'
 
 env:
-  default_dotnet_sdk_version: 9.0.202
+  default_dotnet_sdk_version: 9.0.203
 
 jobs:
   ci_cd:

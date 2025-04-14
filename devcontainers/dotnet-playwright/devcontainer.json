@@ -3,7 +3,7 @@
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "DOTNET_SDK_VERSION": "${localEnv:dotnet_sdk_version:9.0.202}"
+      "DOTNET_SDK_VERSION": "${localEnv:dotnet_sdk_version:9.0.203}"
     }
   }
 }

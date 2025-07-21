@@ -1,4 +1,4 @@
-ARG DOTNET_SDK_VERSION="9.0.302"
+ARG DOTNET_SDK_VERSION="9.0.303"
 
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_VERSION} AS sdk
 WORKDIR /src_playwright

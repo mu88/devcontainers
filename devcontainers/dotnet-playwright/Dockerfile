@@ -6,7 +6,7 @@ RUN dotnet new console --no-restore
 RUN dotnet add package Microsoft.Playwright
 RUN dotnet build --property:PlaywrightPlatform=all -c Release
 
-FROM registry.hub.docker.com/mu88/devcontainers-dotnet:sdk-${DOTNET_SDK_VERSION} AS playwright-install
+FROM ghcr.io/mu88/devcontainers-dotnet:sdk-${DOTNET_SDK_VERSION} AS playwright-install
 COPY --from=sdk /src_playwright/bin/Release/net*/ /src/
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN mkdir /ms-playwright
@@ -18,7 +18,7 @@ COPY --from=sdk /src_playwright/bin/Release/net*/.playwright /ms-playwright-driv
 ENV PLAYWRIGHT_DRIVER_SEARCH_PATH=/ms-playwright-driver
 RUN chmod +x /ms-playwright-driver/.playwright/node/*/node
 
-# Seehttps://github.com/microsoft/playwright-dotnet/issues/3134#issuecomment-2765597377
+# See https://github.com/microsoft/playwright-dotnet/issues/3134#issuecomment-2765597377
 RUN chmod -R 777 /ms-playwright
 
 RUN rm -rf /src/*

@@ -13,7 +13,7 @@ on:
       - '**'
 
 env:
-  default_dotnet_sdk_version: 9.0.306
+  DEFAULT_DOTNET_SDK_VERSION: 9.0.306
 
 jobs:
   ci_cd:
@@ -48,39 +48,48 @@ jobs:
       - name: Set .NET SDK version environment variable
         run: |
           if [ -z "${{ github.event.inputs.dotnet_sdk_version }}" ]; then
-            echo "dotnet_sdk_version=${{ env.default_dotnet_sdk_version }}" >> $GITHUB_ENV
+            echo "DOTNET_SDK_VERSION=${{ env.DEFAULT_DOTNET_SDK_VERSION }}" >> $GITHUB_ENV
           else
-            echo "dotnet_sdk_version=${{ github.event.inputs.dotnet_sdk_version }}" >> $GITHUB_ENV
+            echo "DOTNET_SDK_VERSION=${{ github.event.inputs.dotnet_sdk_version }}" >> $GITHUB_ENV
           fi
 
       - name: Create helper variable with .NET SDK version for Docker image tagging
         run: |
           if [[ "${{ matrix.package }}" == dotnet* ]]; then
-            echo "additional_tag=sdk-${{ env.dotnet_sdk_version }}" >> $GITHUB_ENV
+            echo "ADDITIONAL_TAG=sdk-${{ env.DOTNET_SDK_VERSION }}" >> $GITHUB_ENV
           else
-            echo "additional_tag=" >> $GITHUB_ENV
+            echo "ADDITIONAL_TAG=" >> $GITHUB_ENV
           fi
 
       - name: Set image tag
         run: |
-          if [ -n "${{ env.additional_tag }}" ]; then
-            echo "image_tag=v${{ github.run_number }}, latest, ${{ env.additional_tag }}" >> $GITHUB_ENV
+          if [ -n "${{ env.ADDITIONAL_TAG }}" ]; then
+            echo "IMAGE_TAG=v${{ github.run_number }}, latest, ${{ env.ADDITIONAL_TAG }}" >> $GITHUB_ENV
           else
-            echo "image_tag=v${{ github.run_number }}, latest" >> $GITHUB_ENV
+            echo "IMAGE_TAG=v${{ github.run_number }}, latest" >> $GITHUB_ENV
+          fi
+
+      - name: Determine push behavior (only push new dev container on default branch)
+        run: |
+          if [[ "${{ github.ref_name }}" == "${{ github.event.repository.default_branch }}" ]]; then
+            echo "PUSH=always" >> $GITHUB_ENV
+          else
+            echo "PUSH=never" >> $GITHUB_ENV
           fi
 
       - name: Log certain derived environment variables
         run: |
-          echo "dotnet_sdk_version=${{ env.dotnet_sdk_version }}"
-          echo "additional_tag=${{ env.additional_tag }}"
-          echo "image_tag=${{ env.image_tag }}"
+          echo "ADDITIONAL_TAG=${{ env.ADDITIONAL_TAG }}"
+          echo "DOTNET_SDK_VERSION=${{ env.DOTNET_SDK_VERSION }}"          
+          echo "IMAGE_TAG=${{ env.IMAGE_TAG }}"
+          echo "PUSH=${{ env.PUSH }}"
 
       - name: Pre-build dev container image '${{ matrix.package }}'
         uses: devcontainers/ci@v0.3
         with:
           imageName: ghcr.io/mu88/devcontainers-${{ matrix.package }}
           cacheFrom: ghcr.io/mu88/devcontainers-${{ matrix.package }}
-          push: always
-          imageTag: '${{ env.image_tag }}'
-          subFolder: 'devcontainers/${{ matrix.package }}'
-          configFile: 'devcontainers/${{ matrix.package }}/devcontainer.json'
+          push: ${{ env.PUSH }}
+          imageTag: ${{ env.IMAGE_TAG }}
+          subFolder: devcontainers/${{ matrix.package }}
+          configFile: devcontainers/${{ matrix.package }}/devcontainer.json

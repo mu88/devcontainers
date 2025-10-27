@@ -2,7 +2,7 @@
     "name": "Node / devcontainers-cli",
     "image": "ghcr.io/mu88/devcontainers-node-devcontainer-cli:latest",
     "containerEnv": {
-      "dotnet_sdk_version": "9.0.305"
+      "dotnet_sdk_version": "9.0.306"
     }
   }
   

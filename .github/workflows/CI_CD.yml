@@ -69,27 +69,19 @@ jobs:
             echo "IMAGE_TAG=v${{ github.run_number }}, latest" >> $GITHUB_ENV
           fi
 
-      - name: Determine push behavior (only push new dev container on default branch)
-        run: |
-          if [[ "${{ github.ref_name }}" == "${{ github.event.repository.default_branch }}" ]]; then
-            echo "PUSH=always" >> $GITHUB_ENV
-          else
-            echo "PUSH=never" >> $GITHUB_ENV
-          fi
-
       - name: Log certain derived environment variables
         run: |
           echo "ADDITIONAL_TAG=${{ env.ADDITIONAL_TAG }}"
           echo "DOTNET_SDK_VERSION=${{ env.DOTNET_SDK_VERSION }}"          
           echo "IMAGE_TAG=${{ env.IMAGE_TAG }}"
-          echo "PUSH=${{ env.PUSH }}"
 
       - name: Pre-build dev container image '${{ matrix.package }}'
         uses: devcontainers/ci@v0.3
         with:
           imageName: ghcr.io/mu88/devcontainers-${{ matrix.package }}
           cacheFrom: ghcr.io/mu88/devcontainers-${{ matrix.package }}
-          push: ${{ env.PUSH }}
+          push: filter
+          refFilterForPush: refs/heads/${{ github.event.repository.default_branch }}
           imageTag: ${{ env.IMAGE_TAG }}
           subFolder: devcontainers/${{ matrix.package }}
           configFile: devcontainers/${{ matrix.package }}/devcontainer.json

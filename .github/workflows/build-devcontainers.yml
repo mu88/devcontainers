@@ -1,0 +1,66 @@
+name: Combined CI / Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      dotnet-sdk-version:
+        description: '.NET SDK version'
+        required: true
+  push:
+    tags:
+      - '*'
+    branches:
+      - '**'
+
+env:
+  DEFAULT_dotnet-sdk-version: 10.0.100
+
+jobs:
+  parallel_build_dev_containers:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    strategy:
+      matrix:
+        package: [
+          dotnet,
+          jekyll,
+          node-devcontainer-cli
+        ]
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Build and release dev container '${{ matrix.package }}'
+        uses: ./.github/actions/build-dev-container
+        with:
+          dev-container-name: ${{ matrix.package }}
+          dotnet-sdk-version: ${{ github.event.inputs.dotnet-sdk-version || env.DEFAULT_dotnet-sdk-version }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  dotnet_playwright:
+    runs-on: ubuntu-latest
+    needs: parallel_build_dev_containers
+
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Build and release dev container 'dotnet-playwright'
+        uses: ./.github/actions/build-dev-container
+        with:
+          dev-container-name: dotnet-playwright
+          dotnet-sdk-version: ${{ github.event.inputs.dotnet-sdk-version || env.DEFAULT_dotnet-sdk-version }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
